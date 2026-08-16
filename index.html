@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drake Morrison</title>
+<meta name="description" content="Drake Morrison — writing, tools, and how to reach me.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎩</text></svg>">
+<style>
+  :root {
+    --bg: #faf9f6;
+    --text: #1f2328;
+    --muted: #6a6f76;
+    --link: #175fa8;
+    --rule: #e3e1db;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c;
+      --text: #e6e4df;
+      --muted: #9a9fa6;
+      --link: #7ab3e8;
+      --rule: #2c2f35;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Charter, Georgia, "Times New Roman", serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  main {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 4rem 1.25rem 5rem;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  header img {
+    width: 7rem;
+    height: 7rem;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 2.75rem 0 0.75rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.5rem;
+  }
+  p { margin: 0.75rem 0; }
+  a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { margin: 0.6rem 0; }
+  .desc { color: var(--muted); }
+  .creed { color: var(--muted); font-style: italic; }
+  @media (max-width: 480px) {
+    header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="profile.jpg" alt="Drake Morrison, smiling, wearing a black fedora">
+    <div>
+      <h1>Drake Morrison</h1>
+      <p class="creed">Love, Truth, and Courage.</p>
+    </div>
+  </header>
+
+  <p>Technically a human. Aspiring rationalist, transhumanist, weird person.
+  The scarier the question, the more it should be asked.</p>
+  <p>Love: treating other people&rsquo;s interests as having equal weight to your own.
+  Truth: belief&ndash;reality correspondence.
+  Courage: doing the things that frighten you.</p>
+
+  <h2>Writing</h2>
+  <p>I write on <a href="https://www.lesswrong.com/users/drake-morrison">LessWrong</a>.</p>
+
+  <h2>Tools I&rsquo;ve built</h2>
+  <ul>
+    <li><a href="https://drakemorrison.github.io/meridian/">Meridian</a>
+      <span class="desc">— time tracker and calibration app</span></li>
+    <li><a href="https://drakemorrison.github.io/gnomon/">Gnomon</a>
+      <span class="desc">— one-tap timestamped activity log</span></li>
+    <li><a href="https://drakemorrison.github.io/pharmakon/">Pharmakon</a>
+      <span class="desc">— stimulant-cycling tracker</span></li>
+    <li><a href="https://drakemorrison.github.io/NBacking/">NBacking</a>
+      <span class="desc">— dual n-back working-memory training</span></li>
+  </ul>
+
+  <h2>Elsewhere</h2>
+  <ul>
+    <li><a href="https://github.com/DrakeMorrison">GitHub</a></li>
+    <li><a href="mailto:drake.morrison@hey.com">drake.morrison@hey.com</a></li>
+  </ul>
+</main>
+</body>
+</html>

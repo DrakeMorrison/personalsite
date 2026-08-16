@@ -1,1 +1,3 @@
-Personal site made with Next.js and Tailwind CSS. Deployed with Vercel
+# drakemorrison.net
+
+Single-page personal site. Just `index.html` + `profile.jpg`, served by GitHub Pages.
