@@ -353,9 +353,14 @@ def decorate_links(soup: BeautifulSoup, marks: bool = True) -> None:
             continue
         entry = archive().get(href)
         if entry and entry.get("status") == "ok":
-            ts = entry.get("timestamp", "")
-            when = dt.datetime.strptime(ts[:8], "%Y%m%d").strftime("%-d %B %Y") if ts else ""
-            arc = soup.new_tag("a", attrs={"class": "arc", "href": entry["archived"],
+            # prefer our own copy (served from /archive/), fall back to the Wayback Machine
+            if entry.get("local"):
+                target, when = entry["local"], dt.date.fromisoformat(entry["fetched"]).strftime("%-d %B %Y")
+            else:
+                ts = entry.get("timestamp", "")
+                target = entry["archived"]
+                when = dt.datetime.strptime(ts[:8], "%Y%m%d").strftime("%-d %B %Y") if ts else ""
+            arc = soup.new_tag("a", attrs={"class": "arc", "href": target, "rel": "nofollow",
                                             "title": f"Archived copy, {when}" if when else "Archived copy"})
             arc.string = "a"
             a.insert_after(arc)
@@ -700,6 +705,8 @@ def check(posts: list[Doc], pages: list[Doc]) -> None:
                 e = archive().get(href)
                 if not e or e.get("status") != "ok":
                     warn(f"{d.slug}: external link not archived: {href}")
+                elif not e.get("local") or not (STATIC / "archive" / e["local"].removeprefix("/archive/")).exists():
+                    warn(f"{d.slug}: no local archive copy (only Wayback): {href}")
             elif href.startswith("/"):
                 path = href.split("#")[0]
                 if path not in emitted and not (OUT / path.lstrip("/")).exists():

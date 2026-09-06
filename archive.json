@@ -1,104 +1,138 @@
 {
   "https://drakemorrison.github.io/aristeia/": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260906063124/https://drakemorrison.github.io/aristeia/",
     "timestamp": "20260906063124",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/drakemorrison.github.io/fdff7a628531a35df65554dfed4f800b8bb5343c.html",
+    "fetched": "2026-09-06"
   },
   "https://en.wikipedia.org/wiki/Return_type": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260409162317/https://en.wikipedia.org/wiki/Return_type",
     "timestamp": "20260409162317",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/en.wikipedia.org/e19c82a2e19abd665abaa58a615e01357b07887d.html",
+    "fetched": "2026-09-06"
   },
   "https://github.com/DrakeMorrison": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260906063528/https://github.com/DrakeMorrison",
     "timestamp": "20260906063528",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/github.com/c069ef05cf303a0f57df06c1bb8e96b7b973ee23.html",
+    "fetched": "2026-09-06"
   },
   "https://mylordshesacactus.tumblr.com/post/813939696352772096/please-make-a-post-about-the-story-of-the-rms": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260419231740/https://mylordshesacactus.tumblr.com/post/813939696352772096/please-make-a-post-about-the-story-of-the-rms",
     "timestamp": "20260419231740",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/mylordshesacactus.tumblr.com/280ef5a61b462755995838595b01f7b02d633036.html",
+    "fetched": "2026-09-06"
   },
   "https://scottaaronson.blog/?p=40": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260417053241/https://scottaaronson.blog/?p=40",
     "timestamp": "20260417053241",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/scottaaronson.blog/0bed3fd3c966870cbe1dcf5300845af0d35147b7.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/ECTPvhQv8BBbZcpvZ/plans-are-not-promises": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260523170541/https://www.lesswrong.com/posts/ECTPvhQv8BBbZcpvZ/plans-are-not-promises",
     "timestamp": "20260523170541",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/e212e2cacfbec6c5436b044af44c62a6d17d22c2.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/GJ4ZQm7crTzTM6xDW/focus-your-uncertainty": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260518010742/https://www.lesswrong.com/posts/GJ4ZQm7crTzTM6xDW/focus-your-uncertainty",
     "timestamp": "20260518010742",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/a879068e5214d92f8421457b6a0645ac33cd066b.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/NswFX66W36Ls2aqsr/if-it-s-worth-arguing-it-s-worth-arguing-with-whiteboards": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260615162722/https://www.lesswrong.com/posts/NswFX66W36Ls2aqsr/if-it-s-worth-arguing-it-s-worth-arguing-with-whiteboards",
     "timestamp": "20260615162722",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/b67ccac1f2c39640017eb43458a89e572bfcd11a.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/SARCiTFJfXJJhpej7/carpathia-day": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260416060129/https://www.lesswrong.com/posts/SARCiTFJfXJJhpej7/carpathia-day",
     "timestamp": "20260416060129",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/88ebb00ade40c091ecde92a00bdc13fd8a80b4ab.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/XzrqkhfwtiSDgKoAF/wrong-questions": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260711182848/https://www.lesswrong.com/posts/XzrqkhfwtiSDgKoAF/wrong-questions",
     "timestamp": "20260711182848",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/7bac763ad7c0fe60d1f74100a35cdb203d4844db.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/emsDJNmxBu8Tt6PHt/meaningful-questions-have-return-types": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260810091321/https://www.lesswrong.com/posts/emsDJNmxBu8Tt6PHt/meaningful-questions-have-return-types",
     "timestamp": "20260810091321",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/b7b81f85fbe604943cc5ac8a06987978c5e5bac9.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/opXWijs73rqhr7ohS/if-you-ve-never-bought-a-tool-you-didn-t-need-you-re-not": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260512125858/https://www.lesswrong.com/posts/opXWijs73rqhr7ohS/if-you-ve-never-bought-a-tool-you-didn-t-need-you-re-not",
     "timestamp": "20260512125858",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/908a299a48aa3f56172c97f9b526fd1aced7dcb7.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/p9rQJMRq4qtB9acds/information-vs-assurance": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260607103647/https://www.lesswrong.com/posts/p9rQJMRq4qtB9acds/information-vs-assurance",
     "timestamp": "20260607103647",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/d046d9018a98b92ba9938a1fd376ce951131c7f4.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/rQEwySCcLtdKHkrHp/righting-a-wrong-question": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260721130215/https://www.lesswrong.com/posts/rQEwySCcLtdKHkrHp/righting-a-wrong-question",
     "timestamp": "20260721130215",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/190d332e728beeea29b8abd29e1fb6fe640d3af6.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/posts/z8usYeKX7dtTWsEnk/more-dakka": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260623021530/https://www.lesswrong.com/posts/z8usYeKX7dtTWsEnk/more-dakka",
     "timestamp": "20260623021530",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/2351f1e468a471dfb82894a27100554a214dfdcb.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/users/drake-morrison": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260608182448/https://www.lesswrong.com/users/drake-morrison",
     "timestamp": "20260608182448",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/40fe4fe018b452e8195b0fa827e587ebe6a5c219.html",
+    "fetched": "2026-09-06"
   },
   "https://www.lesswrong.com/w/dissolving-the-question": {
-    "status": "ok",
     "archived": "https://web.archive.org/web/20260630175936/https://www.lesswrong.com/w/dissolving-the-question",
     "timestamp": "20260630175936",
-    "checked": "2026-09-05"
+    "status": "ok",
+    "checked": "2026-09-06",
+    "local": "/archive/www.lesswrong.com/e45bf54563749367fabe08ca86ba0ff0d6ad7356.html",
+    "fetched": "2026-09-06"
   }
 }
