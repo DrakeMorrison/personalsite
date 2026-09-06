@@ -1,7 +1,8 @@
 # drakemorrison.net
 
 Personal site and essays. Markdown in, static HTML out, served by GitHub Pages from `docs/`.
-No JavaScript, no external requests: fonts, images, and styles are all self-hosted.
+No external requests: fonts, images, and styles are all self-hosted. The only script
+is a small inline one for link previews.
 
 ## Layout
 
@@ -10,7 +11,7 @@ No JavaScript, no external requests: fonts, images, and styles are all self-host
 | `posts/<slug>.md` | Essays. The filename is the URL: `/essays/<slug>/`. |
 | `pages/<slug>.md` | Standalone pages: `/<slug>/`. `pages/index.md` is the home page. |
 | `src-assets/<slug>/` | Image originals. Referenced from markdown as `/assets/<slug>/name.png`. |
-| `static/` | Copied into `docs/` as-is (fonts, favicon, CNAME). `style.css` and `dragon.svg` are inlined. |
+| `static/` | Copied into `docs/` as-is (fonts, favicon, CNAME). `style.css`, `popup.js`, and `dragon.svg` are inlined. |
 | `static/archive/<host>/<sha1>.html` | Local copies of every external link, served at `/archive/…`. Committed. |
 | `archive.json` | Index of those copies (plus a Wayback Machine snapshot of each as a backup). |
 | `docs/` | Generated output. Committed, served. Do not edit by hand. |
@@ -52,7 +53,7 @@ Then commit `docs/` along with the sources and push `main`. GitHub Pages serves 
 
 Needs Python 3 with `markdown`, `pyyaml`, `beautifulsoup4`, and `pillow`, plus
 ImageMagick (`magick`) for image encoding. The archiver also needs node (it runs
-`npx single-file-cli`) and a Chromium or Chrome binary (override with `ARCHIVE_BROWSER`).
+`pnpm dlx single-file-cli`) and a Chromium or Chrome binary (override with `ARCHIVE_BROWSER`).
 
 ## Link archiving
 
@@ -65,6 +66,11 @@ the original URL and a `noindex` robots tag, and `robots.txt` excludes `/archive
 the copies stay out of search engines. The Wayback Machine is asked to save each URL as
 well. Run the archiver after adding links; `build.py --check` warns about any link that
 has no local copy. Re-run with `--force` to refresh every snapshot.
+
+Hovering a link previews its target, gwern.net style: a popup shows the page's title and
+description and the page itself in a sandboxed frame. External links preview the local
+archive copy; links between essays preview the essay. `static/popup.js` is inlined into
+every page and does nothing on touch devices.
 
 ## One-off tools
 

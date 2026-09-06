@@ -20,6 +20,7 @@ import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.parse import urlparse
 
 import markdown
 import yaml
@@ -248,6 +249,33 @@ def archive() -> dict:
     return _archive
 
 
+_snapshot_meta: dict[str, tuple[str, str]] = {}
+_ATTR_RE = re.compile(r"""([\w:-]+)=(?:"([^"]*)"|'([^']*)'|([^\s>]+))""")
+
+
+def snapshot_meta(local: str) -> tuple[str, str]:
+    """(title, description) read from the head of an archived copy under static/archive/."""
+    if local not in _snapshot_meta:
+        title = desc = ""
+        path = STATIC / "archive" / local.removeprefix("/archive/")
+        if path.suffix == ".html" and path.exists():
+            head = path.read_text(encoding="utf-8", errors="replace")
+            if m := re.search(r"<title[^>]*>(.*?)</title>", head, re.I | re.S):
+                title = html.unescape(re.sub(r"\s+", " ", m.group(1))).strip()
+            metas = {}
+            for tag in re.findall(r"<meta\b[^>]*>", head, re.I):
+                attrs = {k.lower(): html.unescape(v1 or v2 or v3) for k, v1, v2, v3 in _ATTR_RE.findall(tag)}
+                key = attrs.get("name") or attrs.get("property")
+                if key and "content" in attrs:
+                    metas.setdefault(key.lower(), attrs["content"].strip())
+            desc = metas.get("description") or metas.get("og:description") or ""
+        _snapshot_meta[local] = (title, desc)
+    return _snapshot_meta[local]
+
+
+docs_by_url: dict[str, "Doc"] = {}
+
+
 def is_external(href: str) -> bool:
     return href.startswith(("http://", "https://")) and not href.startswith(SITE_URL)
 
@@ -364,6 +392,25 @@ def decorate_links(soup: BeautifulSoup, marks: bool = True) -> None:
                                             "title": f"Archived copy, {when}" if when else "Archived copy"})
             arc.string = "a"
             a.insert_after(arc)
+            if entry.get("local", "").endswith(".html"):
+                title, desc = snapshot_meta(entry["local"])
+                a["data-preview"] = entry["local"]
+                a["data-host"] = re.sub(r"^www\.", "", urlparse(href).hostname or "")
+                if title:
+                    a["data-title"] = title
+                if desc:
+                    a["data-desc"] = desc
+
+
+def preview_internal_links(soup: BeautifulSoup) -> None:
+    """Essay-to-essay links preview the target essay."""
+    for a in soup.find_all("a", href=True):
+        path = a["href"].split("#")[0]
+        target = docs_by_url.get(path)
+        if target and target.kind == "post" and "footnote-backref" not in a.get("class", []):
+            a["data-preview"] = path
+            a["data-title"] = target.title
+            a["data-desc"] = target.description
 
 
 def replace_hr(soup: BeautifulSoup) -> None:
@@ -418,6 +465,7 @@ def postprocess(doc: Doc) -> None:
     rewrite_images(soup, doc)
     # archive marks are for citations in essays; pages (home, gifts, ...) are navigational
     decorate_links(soup, marks=bool(doc.meta.get("archive_marks", doc.kind == "post")))
+    preview_internal_links(soup)
     replace_hr(soup)
     fix_footnotes(soup)
     strip_embeds(soup, doc)
@@ -445,6 +493,18 @@ def site_css() -> str:
     if _css is None:
         _css = css_min((STATIC / "style.css").read_text(encoding="utf-8"))
     return _css
+
+
+_js: str | None = None
+
+
+def site_js() -> str:
+    global _js
+    if _js is None:
+        js = (STATIC / "popup.js").read_text(encoding="utf-8")
+        js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+        _js = "\n".join(line.strip() for line in js.splitlines() if line.strip())
+    return _js
 
 
 _dragon: str | None = None
@@ -517,6 +577,7 @@ def page_shell(*, title: str, description: str, body: str, url: str, kind: str =
 <a href="/feed.xml">feed</a>
 <a href="https://github.com/{REPO}">source</a>
 </footer>
+<script>{site_js()}</script>
 </body>
 </html>
 """
@@ -621,7 +682,9 @@ def render_proof() -> str:
 
 
 def absolutize(html_text: str) -> str:
-    return re.sub(r'(href|src|srcset)="/(?!/)', rf'\1="{SITE_URL}/', html_text)
+    """Feed-ready HTML: absolute URLs, and no preview data attributes (they only feed popup.js)."""
+    html_text = re.sub(r'(href|src|srcset)="/(?!/)', rf'\1="{SITE_URL}/', html_text)
+    return re.sub(r""" data-(?:preview|title|desc|host)=(?:"[^"]*"|'[^']*')""", "", html_text)
 
 
 def render_feed(posts: list[Doc]) -> bytes:
@@ -673,7 +736,7 @@ def write(path: Path, content: str | bytes) -> None:
 
 def copy_static() -> None:
     for src in STATIC.rglob("*"):
-        if src.is_dir() or src.name in ("style.css", "dragon.svg", "README.md"):
+        if src.is_dir() or src.name in ("style.css", "popup.js", "dragon.svg", "README.md"):
             continue
         dest = OUT / src.relative_to(STATIC)
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -722,6 +785,7 @@ def check(posts: list[Doc], pages: list[Doc]) -> None:
 def build(include_drafts: bool, proof: bool, do_check: bool) -> None:
     OUT.mkdir(exist_ok=True)
     posts, pages = collect(include_drafts)
+    docs_by_url.update({d.url: d for d in posts + pages})
     for d in posts + pages:
         d.title_html = smarten(d.title)
         d.body_html = render_markdown(d.body_md)

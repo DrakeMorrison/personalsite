@@ -16,7 +16,7 @@ Writes archive.json: {url: {"status": "ok"|"failed", "local": "/archive/...",
 "checked": "YYYY-MM-DD", "error": "..."}}. build.py reads it to add the small "a"
 archive mark after each external link, preferring the local copy.
 
-Needs node (for `npx single-file-cli`) and a Chromium/Chrome binary.
+Needs node and pnpm (for `pnpm dlx single-file-cli`) and a Chromium/Chrome binary.
 """
 from __future__ import annotations
 
@@ -140,7 +140,7 @@ CHALLENGE_RE = re.compile(r"<title>[^<]*(checking your browser|just a moment|att
 def single_file(url: str, browser: str, allow_scripts: bool) -> str:
     with tempfile.TemporaryDirectory(prefix="archive-") as tmp:
         out = Path(tmp) / "page.html"
-        cmd = ["npx", "-y", "single-file-cli",
+        cmd = ["pnpm", "dlx", "single-file-cli",
                f"--browser-executable-path={browser}",
                "--browser-arg=--no-sandbox",
                "--block-videos=true", "--block-audios=true", "--remove-frames=true",
