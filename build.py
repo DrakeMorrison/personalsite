@@ -20,7 +20,6 @@ import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
-from urllib.parse import urlparse
 
 import markdown
 import yaml
@@ -249,28 +248,20 @@ def archive() -> dict:
     return _archive
 
 
-_snapshot_meta: dict[str, tuple[str, str]] = {}
-_ATTR_RE = re.compile(r"""([\w:-]+)=(?:"([^"]*)"|'([^']*)'|([^\s>]+))""")
+_snapshot_title: dict[str, str] = {}
 
 
-def snapshot_meta(local: str) -> tuple[str, str]:
-    """(title, description) read from the head of an archived copy under static/archive/."""
-    if local not in _snapshot_meta:
-        title = desc = ""
+def snapshot_title(local: str) -> str:
+    """The <title> of an archived copy under static/archive/, for the preview frame's label."""
+    if local not in _snapshot_title:
+        title = ""
         path = STATIC / "archive" / local.removeprefix("/archive/")
         if path.suffix == ".html" and path.exists():
-            head = path.read_text(encoding="utf-8", errors="replace")
-            if m := re.search(r"<title[^>]*>(.*?)</title>", head, re.I | re.S):
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if m := re.search(r"<title[^>]*>(.*?)</title>", text, re.I | re.S):
                 title = html.unescape(re.sub(r"\s+", " ", m.group(1))).strip()
-            metas = {}
-            for tag in re.findall(r"<meta\b[^>]*>", head, re.I):
-                attrs = {k.lower(): html.unescape(v1 or v2 or v3) for k, v1, v2, v3 in _ATTR_RE.findall(tag)}
-                key = attrs.get("name") or attrs.get("property")
-                if key and "content" in attrs:
-                    metas.setdefault(key.lower(), attrs["content"].strip())
-            desc = metas.get("description") or metas.get("og:description") or ""
-        _snapshot_meta[local] = (title, desc)
-    return _snapshot_meta[local]
+        _snapshot_title[local] = title
+    return _snapshot_title[local]
 
 
 docs_by_url: dict[str, "Doc"] = {}
@@ -282,15 +273,12 @@ def preview_attrs(href: str) -> dict[str, str]:
     path = href.split("#")[0]
     target = docs_by_url.get(path)
     if target and target.kind == "post":
-        return {"data-preview": path, "data-title": target.title, "data-desc": target.description}
+        return {"data-preview": path, "data-title": target.title}
     entry = archive().get(href)
     if is_external(href) and entry and entry.get("status") == "ok" and entry.get("local", "").endswith(".html"):
-        title, desc = snapshot_meta(entry["local"])
-        attrs = {"data-preview": entry["local"], "data-host": re.sub(r"^www\.", "", urlparse(href).hostname or "")}
-        if title:
+        attrs = {"data-preview": entry["local"]}
+        if title := snapshot_title(entry["local"]):
             attrs["data-title"] = title
-        if desc:
-            attrs["data-desc"] = desc
         return attrs
     return {}
 
@@ -703,7 +691,7 @@ def render_proof() -> str:
 def absolutize(html_text: str) -> str:
     """Feed-ready HTML: absolute URLs, and no preview data attributes (they only feed popup.js)."""
     html_text = re.sub(r'(href|src|srcset)="/(?!/)', rf'\1="{SITE_URL}/', html_text)
-    return re.sub(r""" data-(?:preview|title|desc|host)=(?:"[^"]*"|'[^']*')""", "", html_text)
+    return re.sub(r""" data-(?:preview|title)=(?:"[^"]*"|'[^']*')""", "", html_text)
 
 
 def render_feed(posts: list[Doc]) -> bytes:

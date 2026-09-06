@@ -1,6 +1,6 @@
-/* Link previews: hover a link that has data-preview and a popup shows the target's title,
-   description, and the page itself (our archived copy for external links) in a sandboxed
-   frame. Pointer devices only; Escape closes. Inlined into every page by build.py. */
+/* Link previews: hover a link that has data-preview and a popup shows the target page
+   (our archived copy for external links) in a sandboxed frame. Pointer devices only;
+   Escape closes. Inlined into every page by build.py. */
 (() => {
   if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   const links = document.querySelectorAll("main a[data-preview]");
@@ -17,16 +17,16 @@
   function build(a) {
     const p = el("div", "popup");
     p.setAttribute("role", "dialog");
-    const head = el("div", "popup-head");
-    const title = el("a", "popup-title", a.dataset.title || a.href);
-    title.href = a.href;
-    head.appendChild(title);
-    if (a.dataset.host) head.appendChild(el("span", "popup-host", a.dataset.host));
-    p.appendChild(head);
-    if (a.dataset.desc) p.appendChild(el("p", "popup-desc", a.dataset.desc));
     const f = el("iframe");
-    f.setAttribute("sandbox", "");
+    // same-origin so we can hide the archive banner; still no scripts, forms, or navigation
+    f.setAttribute("sandbox", "allow-same-origin");
     f.title = "Preview of " + (a.dataset.title || a.href);
+    f.addEventListener("load", () => {
+      try {
+        const b = f.contentDocument.getElementById("drakemorrison-archive-banner");
+        if (b) b.remove();
+      } catch (e) {}
+    });
     f.src = a.dataset.preview;
     p.appendChild(f);
     p.addEventListener("mouseenter", () => clearTimeout(hideT));

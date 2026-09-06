@@ -67,8 +67,8 @@ the copies stay out of search engines. The Wayback Machine is asked to save each
 well. Run the archiver after adding links; `build.py --check` warns about any link that
 has no local copy. Re-run with `--force` to refresh every snapshot.
 
-Hovering a link previews its target, gwern.net style: a popup shows the page's title and
-description and the page itself in a sandboxed frame. External links preview the local
+Hovering a link previews its target, gwern.net style: a popup shows the page itself in a
+sandboxed frame (the archive banner is hidden there). External links preview the local
 archive copy; links between essays preview the essay. `static/popup.js` is inlined into
 every page and does nothing on touch devices.
 
