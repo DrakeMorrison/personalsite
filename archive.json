@@ -119,14 +119,6 @@
     "local": "/archive/www.lesswrong.com/2351f1e468a471dfb82894a27100554a214dfdcb.html",
     "fetched": "2026-09-06"
   },
-  "https://www.lesswrong.com/users/drake-morrison": {
-    "archived": "https://web.archive.org/web/20260608182448/https://www.lesswrong.com/users/drake-morrison",
-    "timestamp": "20260608182448",
-    "status": "ok",
-    "checked": "2026-09-06",
-    "local": "/archive/www.lesswrong.com/40fe4fe018b452e8195b0fa827e587ebe6a5c219.html",
-    "fetched": "2026-09-06"
-  },
   "https://www.lesswrong.com/w/dissolving-the-question": {
     "archived": "https://web.archive.org/web/20260630175936/https://www.lesswrong.com/w/dissolving-the-question",
     "timestamp": "20260630175936",
