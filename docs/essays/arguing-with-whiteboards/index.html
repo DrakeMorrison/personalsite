@@ -28,7 +28,7 @@
 <article>
 <header class="post-head">
 <h1>If It&rsquo;s Worth Arguing, It&rsquo;s Worth Arguing With Whiteboards</h1>
-<p class="post-meta"><span class="mi">Published <time datetime="2026-04-17">April 17, 2026</time></span><span class="sep">·</span><span class="mi">updated <time datetime="2026-04-18">April 18, 2026</time></span><span class="sep">·</span><span class="mi">3 min read</span><span class="sep">·</span><span class="mi"><a href="https://github.com/DrakeMorrison/personalsite/commits/main/posts/arguing-with-whiteboards.md">history</a></span><span class="sep">·</span><span class="mi"><a href="https://www.lesswrong.com/posts/NswFX66W36Ls2aqsr/if-it-s-worth-arguing-it-s-worth-arguing-with-whiteboards">on LessWrong</a></span></p>
+<p class="post-meta"><span class="mi">Published <time datetime="2026-04-17">April 17, 2026</time></span><span class="sep">·</span><span class="mi">updated <time datetime="2026-04-18">April 18, 2026</time></span><span class="sep">·</span><span class="mi">3 min read</span><span class="sep">·</span><span class="mi"><a href="https://github.com/DrakeMorrison/personalsite/commits/main/posts/arguing-with-whiteboards.md">history</a></span><span class="sep">·</span><span class="mi"><a href="https://www.lesswrong.com/posts/NswFX66W36Ls2aqsr/if-it-s-worth-arguing-it-s-worth-arguing-with-whiteboards" data-preview="/archive/www.lesswrong.com/b67ccac1f2c39640017eb43458a89e572bfcd11a.html" data-host="lesswrong.com" data-title="If It&#x27;s Worth Arguing, It&#x27;s Worth Arguing With Whiteboards — LessWrong" data-desc="It&#x27;s easy to disagree with people. You just say, &quot;That&#x27;s wrong&quot; and decline to elaborate. …">on LessWrong</a></span></p>
 </header>
 <p><span class="dropcap" data-l="I">I</span>t’s easy to disagree with people. You just say, “That’s wrong” and decline to elaborate.</p>
 <p>But that’s not very interesting. If you want to be making progress — instead of ragebaiting — it usually helps to find a way for your disagreement to be <em>productive</em>.</p>
@@ -93,8 +93,8 @@ hide();
 pop = build(a);
 cur = a;
 document.body.appendChild(pop);
-place(a);
-requestAnimationFrame(() => pop && pop.classList.add("on"));
+place(a); // reads layout, so the fade-in below starts from opacity 0
+pop.classList.add("on");
 }
 function hide() {
 clearTimeout(showT);

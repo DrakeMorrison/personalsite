@@ -28,7 +28,7 @@
 <article>
 <header class="post-head">
 <h1>Carpathia Day</h1>
-<p class="post-meta"><span class="mi">Published <time datetime="2026-04-15">April 15, 2026</time></span><span class="sep">·</span><span class="mi">updated <time datetime="2026-04-16">April 16, 2026</time></span><span class="sep">·</span><span class="mi">2 min read</span><span class="sep">·</span><span class="mi"><a href="https://github.com/DrakeMorrison/personalsite/commits/main/posts/carpathia-day.md">history</a></span><span class="sep">·</span><span class="mi"><a href="https://www.lesswrong.com/posts/SARCiTFJfXJJhpej7/carpathia-day">on LessWrong</a></span></p>
+<p class="post-meta"><span class="mi">Published <time datetime="2026-04-15">April 15, 2026</time></span><span class="sep">·</span><span class="mi">updated <time datetime="2026-04-16">April 16, 2026</time></span><span class="sep">·</span><span class="mi">2 min read</span><span class="sep">·</span><span class="mi"><a href="https://github.com/DrakeMorrison/personalsite/commits/main/posts/carpathia-day.md">history</a></span><span class="sep">·</span><span class="mi"><a href="https://www.lesswrong.com/posts/SARCiTFJfXJJhpej7/carpathia-day" data-preview="/archive/www.lesswrong.com/88ebb00ade40c091ecde92a00bdc13fd8a80b4ab.html" data-host="lesswrong.com" data-title="Carpathia Day — LessWrong" data-desc="(The better telling is here. Seriously you should go read it. I&#x27;ve heard this story told in rationalist circles, but there wasn&#x27;t a post on LessWrong…">on LessWrong</a></span></p>
 </header>
 <p class="note">(The better telling is <a data-desc="01010101010101010111-deactivate said: Please make a post about the story of the RMS Carpathia, because it's something that's almost beyond belief and more people should know about it. Answer:..." data-host="mylordshesacactus.tumblr.com" data-preview="/archive/mylordshesacactus.tumblr.com/280ef5a61b462755995838595b01f7b02d633036.html" data-title="Resident Angry Queer — Please make a post about the story of the RMS..." href="https://mylordshesacactus.tumblr.com/post/813939696352772096/please-make-a-post-about-the-story-of-the-rms" rel="noopener">here</a><a class="arc" href="/archive/mylordshesacactus.tumblr.com/280ef5a61b462755995838595b01f7b02d633036.html" rel="nofollow" title="Archived copy, 6 September 2026">a</a>. Seriously you should go read it. I’ve heard this story told in rationalist circles, but there wasn’t a post on LessWrong, so I made one)</p>
 <p><span class="dropcap" data-l="T">T</span>oday is April 15th, Carpathia Day. Take a moment to put forth an unreasonable effort to save a little piece of your world, when no one would fault you for doing less.</p>
@@ -100,8 +100,8 @@ hide();
 pop = build(a);
 cur = a;
 document.body.appendChild(pop);
-place(a);
-requestAnimationFrame(() => pop && pop.classList.add("on"));
+place(a); // reads layout, so the fade-in below starts from opacity 0
+pop.classList.add("on");
 }
 function hide() {
 clearTimeout(showT);

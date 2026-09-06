@@ -276,6 +276,30 @@ def snapshot_meta(local: str) -> tuple[str, str]:
 docs_by_url: dict[str, "Doc"] = {}
 
 
+def preview_attrs(href: str) -> dict[str, str]:
+    """data-* attributes popup.js reads: our own essays preview themselves, external links
+    preview their local archive copy. Empty when there is nothing to show."""
+    path = href.split("#")[0]
+    target = docs_by_url.get(path)
+    if target and target.kind == "post":
+        return {"data-preview": path, "data-title": target.title, "data-desc": target.description}
+    entry = archive().get(href)
+    if is_external(href) and entry and entry.get("status") == "ok" and entry.get("local", "").endswith(".html"):
+        title, desc = snapshot_meta(entry["local"])
+        attrs = {"data-preview": entry["local"], "data-host": re.sub(r"^www\.", "", urlparse(href).hostname or "")}
+        if title:
+            attrs["data-title"] = title
+        if desc:
+            attrs["data-desc"] = desc
+        return attrs
+    return {}
+
+
+def preview_html(href: str) -> str:
+    """The same attributes as a string for hand-built links in templates."""
+    return "".join(f' {k}="{esc(v)}"' for k, v in preview_attrs(href).items())
+
+
 def is_external(href: str) -> bool:
     return href.startswith(("http://", "https://")) and not href.startswith(SITE_URL)
 
@@ -377,7 +401,11 @@ def decorate_links(soup: BeautifulSoup, marks: bool = True) -> None:
         a["rel"] = sorted(rel)
         if EXTERNAL_NEW_TAB:
             a["target"] = "_blank"
-        if not marks or "web.archive.org" in href or "footnote-backref" in a.get("class", []):
+        if "web.archive.org" in href or "footnote-backref" in a.get("class", []):
+            continue
+        for k, v in preview_attrs(href).items():
+            a[k] = v
+        if not marks:
             continue
         entry = archive().get(href)
         if entry and entry.get("status") == "ok":
@@ -392,25 +420,15 @@ def decorate_links(soup: BeautifulSoup, marks: bool = True) -> None:
                                             "title": f"Archived copy, {when}" if when else "Archived copy"})
             arc.string = "a"
             a.insert_after(arc)
-            if entry.get("local", "").endswith(".html"):
-                title, desc = snapshot_meta(entry["local"])
-                a["data-preview"] = entry["local"]
-                a["data-host"] = re.sub(r"^www\.", "", urlparse(href).hostname or "")
-                if title:
-                    a["data-title"] = title
-                if desc:
-                    a["data-desc"] = desc
 
 
 def preview_internal_links(soup: BeautifulSoup) -> None:
-    """Essay-to-essay links preview the target essay."""
+    """Links to our own essays preview the essay."""
     for a in soup.find_all("a", href=True):
-        path = a["href"].split("#")[0]
-        target = docs_by_url.get(path)
-        if target and target.kind == "post" and "footnote-backref" not in a.get("class", []):
-            a["data-preview"] = path
-            a["data-title"] = target.title
-            a["data-desc"] = target.description
+        if is_external(a["href"]) or "footnote-backref" in a.get("class", []):
+            continue
+        for k, v in preview_attrs(a["href"]).items():
+            a[k] = v
 
 
 def replace_hr(soup: BeautifulSoup) -> None:
@@ -592,7 +610,7 @@ def render_post(doc: Doc) -> str:
     meta.append(f'<a href="https://github.com/{REPO}/commits/main/posts/{doc.slug}.md">history</a>')
     if doc.canonical:
         label = "on LessWrong" if "lesswrong.com" in doc.canonical else "original"
-        meta.append(f'<a href="{esc(doc.canonical)}">{label}</a>')
+        meta.append(f'<a href="{esc(doc.canonical)}"{preview_html(doc.canonical)}>{label}</a>')
     body = f"""<article>
 <header class="post-head">
 <h1>{doc.title_html}</h1>
@@ -631,7 +649,8 @@ def render_home(doc: Doc) -> str:
                          f'alt="{esc(str(doc.meta.get("photo_alt", AUTHOR)))}" fetchpriority="high"></picture>')
         else:
             warn(f"home photo not found under src-assets: {rel}")
-    links = "".join(f'<li><a href="{esc(l["href"])}">{esc(l["text"])}</a></li>' for l in doc.meta.get("links", []))
+    links = "".join(f'<li><a href="{esc(l["href"])}"{preview_html(str(l["href"]))}>{esc(l["text"])}</a></li>'
+                    for l in doc.meta.get("links", []))
     intro = smarten(str(doc.meta.get("intro", "")))
     body = f"""<section class="home">
 {photo}
@@ -648,7 +667,7 @@ def render_home(doc: Doc) -> str:
 
 def render_index(posts: list[Doc]) -> str:
     items = "".join(
-        f'<li><a href="{p.url}">{p.title_html}</a>'
+        f'<li><a href="{p.url}"{preview_html(p.url)}>{p.title_html}</a>'
         f'<time datetime="{p.date.isoformat()}">{fmt_date(p.date, short=True)}</time></li>'
         for p in posts
     )

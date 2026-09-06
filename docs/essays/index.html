@@ -27,7 +27,7 @@
 <main>
 <section class="essays-index">
 <h1>Essays</h1>
-<ol class="essays" reversed><li><a href="/essays/arguing-with-whiteboards/">If It&rsquo;s Worth Arguing, It&rsquo;s Worth Arguing With Whiteboards</a><time datetime="2026-04-17">Apr 17, 2026</time></li><li><a href="/essays/buying-tools/">If You&rsquo;ve Never Bought a Tool You Didn&rsquo;t Need, You&rsquo;re Not Buying Enough Tools</a><time datetime="2026-04-16">Apr 16, 2026</time></li><li><a href="/essays/carpathia-day/">Carpathia Day</a><time datetime="2026-04-15">Apr 15, 2026</time></li><li><a href="/essays/plans-are-not-promises/">Plans are Not Promises</a><time datetime="2026-04-14">Apr 14, 2026</time></li><li><a href="/essays/meaningful-questions-have-return-types/">Meaningful Questions Have Return Types</a><time datetime="2026-04-13">Apr 13, 2026</time></li></ol>
+<ol class="essays" reversed><li><a href="/essays/arguing-with-whiteboards/" data-preview="/essays/arguing-with-whiteboards/" data-title="If It&#x27;s Worth Arguing, It&#x27;s Worth Arguing With Whiteboards" data-desc="Productive disagreement starts from shared ground, and a whiteboard is the cheapest way to find out whether you actually share any.">If It&rsquo;s Worth Arguing, It&rsquo;s Worth Arguing With Whiteboards</a><time datetime="2026-04-17">Apr 17, 2026</time></li><li><a href="/essays/buying-tools/" data-preview="/essays/buying-tools/" data-title="If You&#x27;ve Never Bought a Tool You Didn&#x27;t Need, You&#x27;re Not Buying Enough Tools" data-desc="More tools mean more plans you can consider. Lessons from thru-hiking the Appalachian Trail on when a tool earns its weight, and why never regretting a purchase means you are buying too few.">If You&rsquo;ve Never Bought a Tool You Didn&rsquo;t Need, You&rsquo;re Not Buying Enough Tools</a><time datetime="2026-04-16">Apr 16, 2026</time></li><li><a href="/essays/carpathia-day/" data-preview="/essays/carpathia-day/" data-title="Carpathia Day" data-desc="April 15 is Carpathia Day: the story of the small, slow steamer that raced through an ice field to reach the Titanic, and why an unreasonable effort is worth making even when you cannot arrive in time.">Carpathia Day</a><time datetime="2026-04-15">Apr 15, 2026</time></li><li><a href="/essays/plans-are-not-promises/" data-preview="/essays/plans-are-not-promises/" data-title="Plans are Not Promises" data-desc="Plans tell you how someone sees the world; promises deliberately construct assurance, at a cost. Confusing the two is a communication failure, not a character one.">Plans are Not Promises</a><time datetime="2026-04-14">Apr 14, 2026</time></li><li><a href="/essays/meaningful-questions-have-return-types/" data-preview="/essays/meaningful-questions-have-return-types/" data-title="Meaningful Questions Have Return Types" data-desc="A question is only meaningful if you can say what kind of answer would satisfy it. Borrowing the idea of return types from programming to tell real questions from wrong ones.">Meaningful Questions Have Return Types</a><time datetime="2026-04-13">Apr 13, 2026</time></li></ol>
 </section>
 </main>
 <footer class="site-foot">
@@ -81,8 +81,8 @@ hide();
 pop = build(a);
 cur = a;
 document.body.appendChild(pop);
-place(a);
-requestAnimationFrame(() => pop && pop.classList.add("on"));
+place(a); // reads layout, so the fade-in below starts from opacity 0
+pop.classList.add("on");
 }
 function hide() {
 clearTimeout(showT);

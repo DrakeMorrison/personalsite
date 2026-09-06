@@ -51,8 +51,8 @@
     pop = build(a);
     cur = a;
     document.body.appendChild(pop);
-    place(a);
-    requestAnimationFrame(() => pop && pop.classList.add("on"));
+    place(a); // reads layout, so the fade-in below starts from opacity 0
+    pop.classList.add("on");
   }
 
   function hide() {
