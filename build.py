@@ -265,15 +265,17 @@ def snapshot_title(local: str) -> str:
 
 
 docs_by_url: dict[str, "Doc"] = {}
+generated_titles = {"/essays/": "Essays"}  # pages built without a Doc, by url
 
 
 def preview_attrs(href: str) -> dict[str, str]:
-    """data-* attributes popup.js reads: our own essays preview themselves, external links
+    """data-* attributes popup.js reads: our own pages preview themselves, external links
     preview their local archive copy. Empty when there is nothing to show."""
     path = href.split("#")[0]
-    target = docs_by_url.get(path)
-    if target and target.kind == "post":
+    if target := docs_by_url.get(path):
         return {"data-preview": path, "data-title": target.title}
+    if title := generated_titles.get(path):
+        return {"data-preview": path, "data-title": title}
     entry = archive().get(href)
     if is_external(href) and entry and entry.get("status") == "ok" and entry.get("local", "").endswith(".html"):
         attrs = {"data-preview": entry["local"]}
@@ -411,7 +413,7 @@ def decorate_links(soup: BeautifulSoup, marks: bool = True) -> None:
 
 
 def preview_internal_links(soup: BeautifulSoup) -> None:
-    """Links to our own essays preview the essay."""
+    """Links to our own pages preview the page."""
     for a in soup.find_all("a", href=True):
         if is_external(a["href"]) or "footnote-backref" in a.get("class", []):
             continue
