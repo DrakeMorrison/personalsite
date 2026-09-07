@@ -15,6 +15,14 @@
     "local": "/archive/en.wikipedia.org/e19c82a2e19abd665abaa58a615e01357b07887d.html",
     "fetched": "2026-09-06"
   },
+  "https://en.wikipedia.org/wiki/Streetlight_effect": {
+    "status": "ok",
+    "checked": "2026-09-07",
+    "local": "/archive/en.wikipedia.org/4d0046707f505fd3ce3f9dab43bbb678644a98af.html",
+    "fetched": "2026-09-07",
+    "archived": "https://web.archive.org/web/20260907201522/https://en.wikipedia.org/wiki/Streetlight_effect",
+    "timestamp": "20260907201522"
+  },
   "https://github.com/DrakeMorrison": {
     "archived": "https://web.archive.org/web/20260906063528/https://github.com/DrakeMorrison",
     "timestamp": "20260906063528",
@@ -39,6 +47,14 @@
     "local": "/archive/scottaaronson.blog/0bed3fd3c966870cbe1dcf5300845af0d35147b7.html",
     "fetched": "2026-09-06"
   },
+  "https://www.lesswrong.com/posts/34XxbRFe54FycoCDw/the-bottom-line": {
+    "status": "ok",
+    "checked": "2026-09-07",
+    "local": "/archive/www.lesswrong.com/648c77027d55aa59954bd9af59c195aa1d8a5717.html",
+    "fetched": "2026-09-07",
+    "archived": "https://web.archive.org/web/20260804101443/https://www.lesswrong.com/posts/34XxbRFe54FycoCDw/the-bottom-line",
+    "timestamp": "20260804101443"
+  },
   "https://www.lesswrong.com/posts/ECTPvhQv8BBbZcpvZ/plans-are-not-promises": {
     "archived": "https://web.archive.org/web/20260523170541/https://www.lesswrong.com/posts/ECTPvhQv8BBbZcpvZ/plans-are-not-promises",
     "timestamp": "20260523170541",
@@ -54,6 +70,20 @@
     "checked": "2026-09-06",
     "local": "/archive/www.lesswrong.com/a879068e5214d92f8421457b6a0645ac33cd066b.html",
     "fetched": "2026-09-06"
+  },
+  "https://www.lesswrong.com/posts/Htjbj8ystqc2zLtMX/murphyjitsu-an-inner-simulator-algorithm": {
+    "status": "ok",
+    "checked": "2026-09-07",
+    "local": "/archive/www.lesswrong.com/1705da282a696fec298700b53f8743ae947019f3.html",
+    "fetched": "2026-09-07",
+    "archived": "https://web.archive.org/web/20260707180226/https://www.lesswrong.com/posts/Htjbj8ystqc2zLtMX/murphyjitsu-an-inner-simulator-algorithm",
+    "timestamp": "20260707180226"
+  },
+  "https://www.lesswrong.com/posts/M9EuHPg8vBapFEDe9/the-wormtongue-test": {
+    "status": "ok",
+    "checked": "2026-09-07",
+    "local": "/archive/www.lesswrong.com/25c2744f5b456dc1e63499b7c804000792f81f77.html",
+    "fetched": "2026-09-07"
   },
   "https://www.lesswrong.com/posts/NswFX66W36Ls2aqsr/if-it-s-worth-arguing-it-s-worth-arguing-with-whiteboards": {
     "archived": "https://web.archive.org/web/20260615162722/https://www.lesswrong.com/posts/NswFX66W36Ls2aqsr/if-it-s-worth-arguing-it-s-worth-arguing-with-whiteboards",
