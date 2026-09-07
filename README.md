@@ -31,7 +31,8 @@ dropcap: true                  # optional; default true for posts
 
 Body in markdown. Footnotes[^1], images, tables, and fenced code all work.
 A `---` line becomes a dragon divider. A paragraph wrapped in (parentheses) is
-rendered as an italic aside.
+rendered as an italic aside. Math is TeX between `$...$` (inline) or `$$...$$`
+(display), rendered to static HTML at build time.
 
 [^1]: Like this.
 ```
@@ -39,6 +40,17 @@ rendered as an italic aside.
 The first paragraph's first letter (A–Z) becomes an ornate initial. Images go in
 `src-assets/<slug>/` and are encoded to AVIF and WebP at build time, with dimensions
 baked in.
+
+## Math
+
+Like turntrout.com, TeX is rendered at build time with KaTeX (`scripts/render_math.js`,
+using the vendored `scripts/vendor/katex/katex.min.js`), so pages ship static HTML plus
+MathML and no script. Delimiters follow Pandoc's rule so prices are safe: an opening `$`
+must be followed by a non-space, and a closing `$` must follow a non-space and not
+precede a digit. Code spans and fenced blocks are never treated as math. KaTeX's CSS
+(`static/katex.css`, woff2 sources only) is inlined only into pages that contain math,
+and its fonts live in `static/fonts/katex/`. A TeX error becomes a build warning and the
+raw source is shown in red. Upgrade with `scripts/vendor_katex.sh <version>`.
 
 ## Build
 
@@ -52,8 +64,8 @@ python3 scripts/archive_links.py   # snapshot new external links into static/arc
 Then commit `docs/` along with the sources and push `main`. GitHub Pages serves `docs/`.
 
 Needs Python 3 with `markdown`, `pyyaml`, `beautifulsoup4`, and `pillow`, plus
-ImageMagick (`magick`) for image encoding. The archiver also needs node (it runs
-`pnpm dlx single-file-cli`) and a Chromium or Chrome binary (override with `ARCHIVE_BROWSER`).
+ImageMagick (`magick`) for image encoding and node for math. The archiver also needs pnpm
+(it runs `pnpm dlx single-file-cli`) and a Chromium or Chrome binary (override with `ARCHIVE_BROWSER`).
 
 ## Link archiving
 

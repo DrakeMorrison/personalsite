@@ -12,3 +12,6 @@ SIL Open Font License 1.1 (see OFL.txt).
   Used here as an OFL derivative work, subset to A–Z.
 
 Rebuild with `scripts/build_fonts.sh`.
+
+`katex/*.woff2` are the KaTeX fonts (SIL OFL 1.1, derived from Computer Modern), vendored
+by `scripts/vendor_katex.sh`; only the ones an equation uses are ever downloaded.

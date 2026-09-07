@@ -76,6 +76,12 @@ class Doc:
     minutes: int = 0
     has_dropcap: bool = False
     images: list[str] = field(default_factory=list)
+    math: list[tuple[str, bool]] = field(default_factory=list)  # (tex, display) in body order
+    math_html: list[str] = field(default_factory=list)
+
+    @property
+    def has_math(self) -> bool:
+        return bool(self.math)
 
     @property
     def url(self) -> str:
@@ -168,6 +174,77 @@ def smarten(text: str) -> str:
 
 def plain(text_html: str) -> str:
     return BeautifulSoup(text_html, "html.parser").get_text()
+
+
+# ----------------------------------------------------------------------------- math
+
+# TeX math is rendered to static HTML at build time with KaTeX (scripts/render_math.js), the way
+# turntrout.com does it; no client-side script. `$$...$$` is display math, `$...$` inline, using
+# Pandoc's rule so prices survive: the opening `$` must be followed by non-space, the closing `$`
+# preceded by non-space and not followed by a digit. Code spans and fenced blocks are left alone.
+MATH_TOKEN = re.compile(
+    r"(?P<fence>^(?:```|~~~)[^\n]*\n.*?^(?:```|~~~)[ \t]*$)"
+    r"|(?P<code>`+[^`\n]+`+)"
+    r"|(?P<display>\$\$(?P<dtex>.+?)\$\$)"
+    r"|(?P<inline>(?<![\\$\w])\$(?P<itex>(?=\S)(?:[^$\n])*?(?<=\S))\$(?![\d$]))",
+    re.M | re.S,
+)
+MATH_PLACEHOLDER = "\u27e6math{}\u27e7"  # ⟦math0⟧: survives markdown untouched
+MATH_PLACEHOLDER_RE = re.compile(r"\u27e6math(\d+)\u27e7")
+
+
+def extract_math(md: str) -> tuple[str, list[tuple[str, bool]]]:
+    found: list[tuple[str, bool]] = []
+
+    def sub(m: re.Match) -> str:
+        if m.group("display") is not None:
+            found.append((m.group("dtex").strip(), True))
+        elif m.group("inline") is not None:
+            found.append((m.group("itex"), False))
+        else:
+            return m.group(0)
+        return MATH_PLACEHOLDER.format(len(found) - 1)
+
+    return MATH_TOKEN.sub(sub, md), found
+
+
+def render_math(items: list[tuple[str, bool]]) -> list[dict]:
+    if not items:
+        return []
+    payload = json.dumps([{"tex": t, "display": d} for t, d in items])
+    r = subprocess.run(["node", str(ROOT / "scripts" / "render_math.js")], input=payload,
+                       capture_output=True, text=True, check=True)
+    return json.loads(r.stdout)
+
+
+def render_all_math(docs: list[Doc]) -> None:
+    """One node call for every equation on the site, then hand each doc its HTML."""
+    todo = [(d, tex, disp) for d in docs for tex, disp in d.math]
+    results = render_math([(tex, disp) for _, tex, disp in todo])
+    for (d, tex, _), r in zip(todo, results):
+        if "error" in r:
+            warn(f"{d.slug}: math error in ${tex}$: {r['error']}")
+            d.math_html.append(f'<code class="math-error">{esc(tex)}</code>')
+        else:
+            d.math_html.append(r["html"])
+
+
+def insert_math(doc: Doc) -> None:
+    doc.body_html = MATH_PLACEHOLDER_RE.sub(lambda m: doc.math_html[int(m.group(1))], doc.body_html)
+
+
+_katex_css: str | None = None
+
+
+def katex_css() -> str:
+    global _katex_css
+    if _katex_css is None:
+        _katex_css = css_min((STATIC / "katex.css").read_text(encoding="utf-8"))
+    return _katex_css
+
+
+def math_head(doc: Doc) -> str:
+    return f"<style>{katex_css()}</style>" if doc.has_math else ""
 
 
 # ----------------------------------------------------------------------------- assets
@@ -609,7 +686,8 @@ def render_post(doc: Doc) -> str:
 {doc.body_html}
 </article>"""
     extra = (f'<meta property="article:published_time" content="{doc.date.isoformat()}">'
-             + (f'<meta property="article:modified_time" content="{doc.updated.isoformat()}">' if doc.updated else ""))
+             + (f'<meta property="article:modified_time" content="{doc.updated.isoformat()}">' if doc.updated else "")
+             + math_head(doc))
     fonts = ("Regular", "SemiBold", "Italic") + (("InitialsF1", "InitialsF2") if doc.has_dropcap else ())
     return page_shell(title=plain(doc.title_html), description=plain(smarten(doc.description)), body=body,
                       url=doc.url, kind="post", extra_head=extra, fonts=fonts)
@@ -622,7 +700,7 @@ def render_page(doc: Doc) -> str:
 </article>"""
     fonts = ("Regular", "SemiBold") + (("InitialsF1", "InitialsF2") if doc.has_dropcap else ())
     return page_shell(title=plain(doc.title_html), description=plain(smarten(doc.description)), body=body,
-                      url=doc.url, fonts=fonts)
+                      url=doc.url, extra_head=math_head(doc), fonts=fonts)
 
 
 def render_home(doc: Doc) -> str:
@@ -693,7 +771,13 @@ def render_proof() -> str:
 def absolutize(html_text: str) -> str:
     """Feed-ready HTML: absolute URLs, and no preview data attributes (they only feed popup.js)."""
     html_text = re.sub(r'(href|src|srcset)="/(?!/)', rf'\1="{SITE_URL}/', html_text)
-    return re.sub(r""" data-(?:preview|title)=(?:"[^"]*"|'[^']*')""", "", html_text)
+    html_text = re.sub(r""" data-(?:preview|title)=(?:"[^"]*"|'[^']*')""", "", html_text)
+    if "katex-html" in html_text:  # keep only the MathML layer: feed readers have no KaTeX CSS
+        soup = BeautifulSoup(html_text, "html.parser")
+        for el in soup.select(".katex-html"):
+            el.decompose()
+        html_text = soup.decode(formatter="minimal")
+    return html_text
 
 
 def render_feed(posts: list[Doc]) -> bytes:
@@ -745,7 +829,7 @@ def write(path: Path, content: str | bytes) -> None:
 
 def copy_static() -> None:
     for src in STATIC.rglob("*"):
-        if src.is_dir() or src.name in ("style.css", "popup.js", "dragon.svg", "README.md"):
+        if src.is_dir() or src.name in ("style.css", "katex.css", "popup.js", "dragon.svg", "README.md"):
             continue
         dest = OUT / src.relative_to(STATIC)
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -797,8 +881,12 @@ def build(include_drafts: bool, proof: bool, do_check: bool) -> None:
     docs_by_url.update({d.url: d for d in posts + pages})
     for d in posts + pages:
         d.title_html = smarten(d.title)
-        d.body_html = render_markdown(d.body_md)
+        md, d.math = extract_math(d.body_md)
+        d.body_html = render_markdown(md)
         postprocess(d)
+    render_all_math(posts + pages)
+    for d in posts + pages:
+        insert_math(d)
     for p in posts:
         write(p.out_path, render_post(p))
     for pg in pages:

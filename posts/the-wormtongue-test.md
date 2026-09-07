@@ -28,7 +28,7 @@ If your plan is too similar to the wormtongue plan, you’re in trouble. Your pl
 
 If you want the hard version of the test, give the two plans to your friend, and ask them if they can tell which plan is which. Or better yet, write wormtongue plans for each other, and compare to your real plans. You can see incentives they are blind to or rationalizing away, and they can do the same for you.
 
-To score yourself on the wormtongue test, treat each feature of your plan as evidence about two hypotheses: corrupt plan, vs virtuous plan. For each feature ask, *P(feature | corrupted) / P(feature | virtuous)*. Features that are shared contribute nothing, only the differences matter. Features that spring from the same underlying trait shouldn't be counted twice. Sum the log-ratios and you get total bits for or against corruption. Lower is better, negative bits favor virtue.
+To score yourself on the wormtongue test, treat each feature of your plan as evidence about two hypotheses: corrupt plan, vs virtuous plan. For each feature ask, $P(feature|corrupted) / P(feature|virtuous)$. Features that are shared contribute nothing, only the differences matter. Features that spring from the same underlying trait shouldn't be counted twice. Sum the log-ratios and you get total bits for or against corruption. Lower is better, negative bits favor virtue.
 
 **Your score on the wormtongue test is measured in bits of corruption, by summing the log-ratios of each feature of your plan.**
 
