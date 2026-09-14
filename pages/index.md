@@ -2,7 +2,7 @@
 title: Drake Morrison
 template: home
 description: Drake Morrison — essays on thinking well, and small tools.
-intro: I live in Berkeley, where I work at Lighthaven Operations, write, and build things.
+intro: I live in Berkeley and work on Lighthaven, the campus Lightcone Infrastructure runs. Mostly operations, some software.
 photo: /assets/site/profile.webp
 links:
   - text: Essays
@@ -13,6 +13,4 @@ links:
     href: https://github.com/DrakeMorrison
 ---
 
-The essays are mostly about thinking well: what makes a question meaningful, why arguments go better with whiteboards, why plans are not promises. The tools are small, single-purpose instruments for seeing where time and attention actually go.
-
-The scarier the question, the more it should be asked.
+This site has my essays and a few small tools I've built.
