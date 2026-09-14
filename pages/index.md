@@ -1,7 +1,7 @@
 ---
 title: Drake Morrison
 template: home
-description: Drake Morrison — essays on thinking well, and small tools.
+description: Drake Morrison — essays and small tools, from Berkeley and Lighthaven.
 intro: I live in Berkeley and work on Lighthaven, the campus Lightcone Infrastructure runs. Mostly operations, some software.
 photo: /assets/site/profile.webp
 links:
