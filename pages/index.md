@@ -2,7 +2,7 @@
 title: Drake Morrison
 template: home
 description: Drake Morrison — essays and small tools, from Berkeley and Lighthaven.
-intro: I live in Berkeley and run Lighthaven, the campus Lightcone Infrastructure runs. Mostly operations, some software.
+intro: I live in Berkeley and run Lighthaven, Lightcone Infrastructure's campus. Mostly operations, some software.
 photo: /assets/site/profile.webp
 links:
   - text: Essays
