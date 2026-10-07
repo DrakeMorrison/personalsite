@@ -615,6 +615,15 @@ EYE_ALMOND = ("M22.9 15.2Q22.2 15.2 21.6 14.7Q21.1 14.2 21.1 13.5Q21.1 12 23.1 1
 EYE_PUPIL = "M23 14.2Q23.7 14.2 23.7 13.5Q23.7 12.8 23 12.8Q22.2 12.8 22.2 13.5Q22.2 14.2 23 14.2Z"
 
 
+def min_js(path: Path) -> str:
+    js = re.sub(r"/\*.*?\*/", "", path.read_text(encoding="utf-8"), flags=re.S)
+    return "\n".join(line.strip() for line in js.splitlines() if line.strip())
+
+
+# runs before first paint so a dark-theme visitor never sees a light flash
+THEME_INIT = '<script>try{if(localStorage.getItem("theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>'
+
+
 def home_dragon() -> str:
     """The glyph again, large and pale behind the home page, with an eye that can look around
     (eyes.js moves the pupil). The almond and its cut-out pupil are lifted out of the path and
@@ -625,8 +634,7 @@ def home_dragon() -> str:
         warn("dragon.svg eye subpaths not found; home background dragon skipped")
         return ""
     d = d.replace(EYE_ALMOND, "").replace(EYE_PUPIL, "")
-    eyes = (STATIC / "eyes.js").read_text(encoding="utf-8")
-    eyes = "\n".join(l.strip() for l in re.sub(r"/\*.*?\*/", "", eyes, flags=re.S).splitlines() if l.strip())
+    eyes = "\n".join(min_js(STATIC / f) for f in ("eyes.js", "fire.js"))
     return f"""<div class="bg-dragon" aria-hidden="true"><svg viewBox="0 0 64 64">
 <path class="body" d="{d}"/>
 <clipPath id="dragon-eye-clip"><path d="{EYE_ALMOND}"/></clipPath>
@@ -672,6 +680,7 @@ def page_shell(*, title: str, description: str, body: str, url: str, kind: str =
 <meta property="og:description" content="{esc(description)}">
 <meta property="og:url" content="{abs_url}">
 <meta name="twitter:card" content="summary">
+{THEME_INIT}
 {extra_head}{font_preloads(*fonts)}
 <style>{site_css()}</style>
 </head>
@@ -857,7 +866,7 @@ def write(path: Path, content: str | bytes) -> None:
 
 def copy_static() -> None:
     for src in STATIC.rglob("*"):
-        if src.is_dir() or src.name in ("style.css", "katex.css", "popup.js", "eyes.js", "dragon.svg", "README.md"):
+        if src.is_dir() or src.name in ("style.css", "katex.css", "popup.js", "eyes.js", "fire.js", "dragon.svg", "README.md"):
             continue
         dest = OUT / src.relative_to(STATIC)
         dest.parent.mkdir(parents=True, exist_ok=True)
