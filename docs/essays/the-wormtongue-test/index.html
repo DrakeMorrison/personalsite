@@ -99,12 +99,13 @@ const m = mouth();
 const ang = Math.atan2(ty - m.y, tx - m.x);
 const dist = Math.hypot(tx - m.x, ty - m.y);
 const LICK = Math.min(110, Math.max(60, Math.min(W, H) * 0.12)); // how far flame tips reach past the wall
-const maxR = Math.max(...[[0, 0], [W, 0], [0, H], [W, H]].map(([x, y]) => Math.hypot(x - tx, y - ty))) + LICK * 2.2;
-const STREAM = 380, SPREAD = 620, HOLD = 120; // ms
+const corner = Math.max(...[[0, 0], [W, 0], [0, H], [W, H]].map(([x, y]) => Math.hypot(x - tx, y - ty)));
+const maxR = corner + LICK * 2.2;
+const STREAM = 380, SPREAD = 620; // ms
 const reach = Math.max(140, Math.min(STREAM, dist * 0.7)); // when the breath arrives at the target
 const seeds = n => Array.from({ length: n }, () => ({ ph: Math.random() * 6.28, h: 0.65 + Math.random() * 0.35, c: Math.random() - 0.3 }));
 const big = seeds(15);
-let t0 = 0, flipped = false;
+let t0 = 0, flipped = false, tFlip = 0;
 // circle of radius R at (cx, cy) whose rim is a ring of curling flame licks of height up to lick
 function wall(cx, cy, R, t, spin, sd, lick) {
 const n = sd.length, sp = Math.PI * 2 / n, h = Math.min(lick, R * 0.5);
@@ -142,15 +143,16 @@ ctx.restore();
 // upright flames, packed tightly enough to still cover the screen. Each one flickers, then
 // dies down into its base, roughly nearest the click first.
 const CELL = Math.max(90, Math.min(170, Math.max(W, H) / 9));
-const DIE = 1200, STAGGER = 2400;
+const DIE = 900, STAGGER = 1800;
 const far = Math.hypot(W, H);
 const flames = [];
-for (let row = 0, y = -CELL; y < H + CELL * 2.2; row++, y += CELL * 0.5)
+for (let row = 0, y = -CELL; y < H + CELL * 2.2; row++, y += CELL * 0.62)
 for (let x = (row % 2) * CELL / 2 - CELL; x < W + CELL; x += CELL) {
 const fx = x + (Math.random() - 0.5) * CELL * 0.3, fy = y + (Math.random() - 0.5) * CELL * 0.2;
-const at = Math.min(1, Math.hypot(fx - tx, fy - ty) / far) * STAGGER * 0.6 + Math.random() * STAGGER * 0.4;
-flames.push({ x: fx, y: fy, at, ph: [0, 1, 2].map(() => Math.random() * 6.28), side: Math.random() < 0.5 ? -1 : 1,
-w: CELL * (1.4 + Math.random() * 0.3), h: CELL * (2 + Math.random() * 0.6) });
+const at = (Math.min(1, Math.hypot(fx - tx, fy - ty) / far) * 0.88 + Math.random() * 0.12) * STAGGER;
+const f = { x: fx, y: fy, at, ph: [0, 1, 2].map(() => Math.random() * 6.28), side: Math.random() < 0.5 ? -1 : 1,
+w: CELL * (1.25 + Math.random() * 0.2), h: CELL * (1.5 + Math.random() * 0.4) };
+if (f.y > 0 && f.y - f.h < H && f.x + f.w / 2 > 0 && f.x - f.w / 2 < W) flames.push(f); // skip ones wholly off-screen
 }
 // an upright flame standing on (x, y): round belly, a main tip swaying and curling to one
 // side, and a smaller tongue on each flank, all flickering out of step
@@ -215,17 +217,18 @@ wall(tx, ty, R, t, t / 1800, big, LICK);
 ctx.globalCompositeOperation = "destination-out";
 tongues(tx, ty, R, t, t / 1800, 1 - k, big, LICK);
 ctx.globalCompositeOperation = "source-over";
+// the moment the wall's solid body covers the screen: flip, and start dying down
+if (R >= corner) { flipped = true; tFlip = t; flip(); }
 }
-if (t >= reach + SPREAD && !flipped) { flipped = true; flip(); }
 // then it dies down, flame by flame, onto the new theme
 if (flipped) {
-const tr = t - (reach + SPREAD + HOLD);
+const tr = t - tFlip;
 if (tr < 0) ctx.fillRect(0, 0, W, H);
 let done = true;
 for (const f of flames) {
 const k = Math.max(0, Math.min(1, (tr - f.at) / DIE));
 if (k < 1) done = false; else continue;
-upright(f, t, 1 - k * k); // slow to start dying, then gutters out
+upright(f, t, (1 - k) * (1 - k)); // collapses fast, then gutters out small
 }
 if (done) { cv.remove(); busy = false; return; }
 }
