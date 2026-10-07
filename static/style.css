@@ -250,4 +250,4 @@ ol.essays time {
 .bg-dragon svg { height: min(94vh, 125vw); width: auto; }
 .bg-dragon .body { fill: #f5ece3; }
 .bg-dragon .sclera { fill: var(--bg); stroke: #f5ece3; stroke-width: 0.35; }
-.bg-dragon .pupil { fill: var(--fire); }
+.bg-dragon .pupil { fill: #f5ece3; }
