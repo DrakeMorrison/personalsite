@@ -609,6 +609,33 @@ def dragon_symbol() -> str:
     return _dragon
 
 
+# the glyph's eye: an almond (ink) with a round pupil cut out of it
+EYE_ALMOND = ("M22.9 15.2Q22.2 15.2 21.6 14.7Q21.1 14.2 21.1 13.5Q21.1 12 23.1 12H26.1"
+              "Q25.9 13.1 24.9 14.2Q23.9 15.2 22.9 15.2Z")
+EYE_PUPIL = "M23 14.2Q23.7 14.2 23.7 13.5Q23.7 12.8 23 12.8Q22.2 12.8 22.2 13.5Q22.2 14.2 23 14.2Z"
+
+
+def home_dragon() -> str:
+    """The glyph again, large and pale behind the home page, with an eye that can look around
+    (eyes.js moves the pupil). The almond and its cut-out pupil are lifted out of the path and
+    redrawn as a sclera with a separate pupil."""
+    svg = (STATIC / "dragon.svg").read_text(encoding="utf-8")
+    d = ET.fromstring(svg).find("{http://www.w3.org/2000/svg}path").get("d")
+    if EYE_ALMOND not in d or EYE_PUPIL not in d:
+        warn("dragon.svg eye subpaths not found; home background dragon skipped")
+        return ""
+    d = d.replace(EYE_ALMOND, "").replace(EYE_PUPIL, "")
+    eyes = (STATIC / "eyes.js").read_text(encoding="utf-8")
+    eyes = "\n".join(l.strip() for l in re.sub(r"/\*.*?\*/", "", eyes, flags=re.S).splitlines() if l.strip())
+    return f"""<div class="bg-dragon" aria-hidden="true"><svg viewBox="0 0 64 64">
+<path class="body" d="{d}"/>
+<clipPath id="dragon-eye-clip"><path d="{EYE_ALMOND}"/></clipPath>
+<path id="dragon-eye" class="sclera" d="{EYE_ALMOND}"/>
+<circle id="dragon-pupil" class="pupil" cx="23.4" cy="13.6" r="0.78" clip-path="url(#dragon-eye-clip)"/>
+</svg></div>
+<script>{eyes}</script>"""
+
+
 def esc(s: str) -> str:
     return html.escape(s, quote=True)
 
@@ -720,7 +747,8 @@ def render_home(doc: Doc) -> str:
     links = "".join(f'<li><a href="{esc(l["href"])}"{preview_html(str(l["href"]))}>{esc(l["text"])}</a></li>'
                     for l in doc.meta.get("links", []))
     intro = smarten(str(doc.meta.get("intro", "")))
-    body = f"""<section class="home">
+    body = f"""{home_dragon()}
+<section class="home">
 {photo}
 <h1 class="name">{doc.title_html}</h1>
 <p class="intro">{intro}</p>
@@ -829,7 +857,7 @@ def write(path: Path, content: str | bytes) -> None:
 
 def copy_static() -> None:
     for src in STATIC.rglob("*"):
-        if src.is_dir() or src.name in ("style.css", "katex.css", "popup.js", "dragon.svg", "README.md"):
+        if src.is_dir() or src.name in ("style.css", "katex.css", "popup.js", "eyes.js", "dragon.svg", "README.md"):
             continue
         dest = OUT / src.relative_to(STATIC)
         dest.parent.mkdir(parents=True, exist_ok=True)

@@ -244,3 +244,10 @@ ol.essays time {
 .katex { font-size: 1.1em; }
 .katex-display { margin: 1.2em 0; overflow-x: auto; overflow-y: hidden; }
 .math-error { color: var(--fire, #c7421c); }
+
+/* home background dragon (eyes.js moves the pupil) */
+.bg-dragon { position: fixed; inset: 0; z-index: -1; display: grid; place-items: center; pointer-events: none; overflow: hidden; }
+.bg-dragon svg { height: min(94vh, 125vw); width: auto; }
+.bg-dragon .body { fill: #eedfd2; }
+.bg-dragon .sclera { fill: var(--bg); stroke: #eedfd2; stroke-width: 0.35; }
+.bg-dragon .pupil { fill: var(--fire); }
