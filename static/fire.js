@@ -1,7 +1,7 @@
 /* Click the page background and the dragon breathes fire at that spot. Drawn like the glyph
    and the initials: flat flame tongues in the site's fire colour with woodcut cut-outs, no
    gradients or glow. A wall of flame spreads until it covers the screen, the theme flips
-   light <-> dark underneath it, then a flame-edged hole burns open on the new theme.
+   light <-> dark underneath it, then the fire burns out in patches across the new theme.
    The choice is remembered (build.py's THEME_INIT reads it). */
 (() => {
 const svg = document.querySelector(".bg-dragon svg");
@@ -53,20 +53,20 @@ const ang = Math.atan2(ty - m.y, tx - m.x);
 const dist = Math.hypot(tx - m.x, ty - m.y);
 const LICK = Math.min(110, Math.max(60, Math.min(W, H) * 0.12)); // how far flame tips reach past the wall
 const maxR = Math.max(...[[0, 0], [W, 0], [0, H], [W, H]].map(([x, y]) => Math.hypot(x - tx, y - ty))) + LICK * 2.2;
-const STREAM = 380, SPREAD = 620, HOLD = 90, REVEAL = 620; // ms
+const STREAM = 380, SPREAD = 620, HOLD = 120; // ms
 const reach = Math.max(140, Math.min(STREAM, dist * 0.7)); // when the breath arrives at the target
-const N = 15, sp = Math.PI * 2 / N;
-const seeds = Array.from({ length: N }, () => ({ ph: Math.random() * 6.28, h: 0.65 + Math.random() * 0.35, c: Math.random() - 0.3 }));
+const seeds = n => Array.from({ length: n }, () => ({ ph: Math.random() * 6.28, h: 0.65 + Math.random() * 0.35, c: Math.random() - 0.3 }));
+const big = seeds(15);
 let t0 = 0, flipped = false;
 
-// circle of radius R whose rim is a ring of curling flame licks
-function wall(R, t, spin) {
-const h = Math.min(LICK, R * 0.5);
+// circle of radius R at (cx, cy) whose rim is a ring of curling flame licks of height up to lick
+function wall(cx, cy, R, t, spin, sd, lick) {
+const n = sd.length, sp = Math.PI * 2 / n, h = Math.min(lick, R * 0.5);
+const P = (a, r) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
 ctx.beginPath();
-for (let i = 0; i < N; i++) {
-const s = seeds[i], a0 = i * sp + spin, hh = h * s.h * (0.8 + 0.2 * Math.sin(t / 70 + s.ph));
+for (let i = 0; i < n; i++) {
+const s = sd[i], a0 = i * sp + spin, hh = h * s.h * (0.8 + 0.2 * Math.sin(t / 70 + s.ph));
 const at = a0 + sp * (0.55 + 0.45 * s.c), a1 = a0 + sp;
-const P = (a, r) => [tx + Math.cos(a) * r, ty + Math.sin(a) * r];
 const [x0, y0] = P(a0, R), [xt, yt] = P(at, R + hh), [x1, y1] = P(a1, R);
 const [c1x, c1y] = P(a0 + sp * 0.02, R + hh * 0.5), [c2x, c2y] = P(at - sp * 0.4, R + hh * 0.8);
 const [c3x, c3y] = P(at + sp * 0.1, R + hh * 0.5), [c4x, c4y] = P(a1 - sp * 0.1, R + hh * 0.2);
@@ -78,19 +78,32 @@ ctx.closePath();
 ctx.fill();
 }
 // small tongues pointing outward just inside a wall, like the cut-outs in the glyph
-function tongues(R, t, spin, scale) {
-const r = Math.min(LICK, R * 0.5) * 0.17 * scale;
+function tongues(cx, cy, R, t, spin, scale, sd, lick) {
+const n = sd.length, sp = Math.PI * 2 / n, r = Math.min(lick, R * 0.5) * 0.17 * scale;
 if (r < 1) return;
-for (let i = 0; i < N; i++) {
-const s = seeds[i], a = i * sp + spin + sp * 0.5, rr = R - r * 2.2;
+for (let i = 0; i < n; i++) {
+const s = sd[i], a = i * sp + spin + sp * 0.5, rr = R - r * 2.2;
 ctx.save();
-ctx.translate(tx + Math.cos(a) * rr, ty + Math.sin(a) * rr);
+ctx.translate(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
 ctx.rotate(a + Math.PI);
 ctx.beginPath();
 tongue(ctx, r, r * 4.2, r * 1.6 * Math.sin(t / 90 + s.ph));
 ctx.fill();
 ctx.restore();
 }
+}
+
+// the burn-out: patches on a jittered grid, each a flame-edged hole that opens on the new
+// theme. Patches near the click go first, so the fire dies back across the page unevenly.
+const CELL = Math.max(130, Math.min(240, Math.max(W, H) / 7));
+const PLICK = CELL * 0.3, GROW = 1300, STAGGER = 2600;
+const far = Math.hypot(W, H);
+const spots = [];
+for (let y = -CELL / 2; y < H + CELL; y += CELL)
+for (let x = -CELL / 2; x < W + CELL; x += CELL) {
+const sx = x + (Math.random() - 0.5) * CELL * 0.6, sy = y + (Math.random() - 0.5) * CELL * 0.6;
+const at = Math.min(1, Math.hypot(sx - tx, sy - ty) / far) * STAGGER * 0.65 + Math.random() * STAGGER * 0.35;
+spots.push({ x: sx, y: sy, at, spin: Math.random() * 6.28, sd: seeds(8) });
 }
 
 function frame(now) {
@@ -132,23 +145,32 @@ ctx.restore();
 }
 }
 
-// the wall of flame, then the hole that burns open on the new theme
-if (t > reach) {
+// the wall of flame
+if (t > reach && !flipped) {
 const k = Math.min(1, (t - reach) / SPREAD), R = maxR * ease(k);
-wall(R, t, t / 1800);
+wall(tx, ty, R, t, t / 1800, big, LICK);
 ctx.globalCompositeOperation = "destination-out";
-tongues(R, t, t / 1800, 1 - k);
+tongues(tx, ty, R, t, t / 1800, 1 - k, big, LICK);
 ctx.globalCompositeOperation = "source-over";
 }
-const tr = reach + SPREAD + HOLD;
 if (t >= reach + SPREAD && !flipped) { flipped = true; flip(); }
-if (t > tr) {
-const k = Math.min(1, (t - tr) / REVEAL), R = maxR * ease(k);
+
+// then it burns out, patch by patch, onto the new theme
+if (flipped) {
+const tr = t - (reach + SPREAD + HOLD);
+ctx.fillRect(0, 0, W, H);
+let done = true;
+for (const s of spots) {
+const k = Math.max(0, Math.min(1, (tr - s.at) / GROW));
+if (k < 1) done = false;
+if (k <= 0) continue;
+const R = CELL * 1.05 * (1 - Math.pow(1 - k, 2)); // fast catch, slow finish
 ctx.globalCompositeOperation = "destination-out";
-wall(R, t, -t / 1800);
+wall(s.x, s.y, R, t, s.spin + t / 2400, s.sd, PLICK);
 ctx.globalCompositeOperation = "source-over";
-tongues(R, t, -t / 1800, 1 - k);
-if (k >= 1) { cv.remove(); busy = false; return; }
+tongues(s.x, s.y, R, t, s.spin, 1 - k, s.sd, PLICK);
+}
+if (done) { cv.remove(); busy = false; return; }
 }
 requestAnimationFrame(frame);
 }
