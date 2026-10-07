@@ -5,7 +5,7 @@
   --muted: #6f6a64;
   --rule: #e4e1da;
   --paper-2: #f3ece3;
-  --fire: #c7421c;
+  --fire: #bf3f1b;  /* 4.5:1 even over the background dragon */
   --fire-deep: #b03a18;
   --fire-wash: #f5dccf;
   --dragon: #f5ece3;
@@ -262,7 +262,7 @@ ol.essays time {
 .katex-display { margin: 1.2em 0; overflow-x: auto; overflow-y: hidden; }
 .math-error { color: var(--fire, #c7421c); }
 
-/* home background dragon (eyes.js moves the pupil) */
+/* background dragon on every page (eyes.js moves the pupil, fire.js breathes) */
 .bg-dragon { position: fixed; inset: 0; z-index: -1; display: grid; place-items: center; pointer-events: none; overflow: hidden; }
 .bg-dragon svg { height: min(94vh, 125vw); width: auto; }
 .bg-dragon .body { fill: var(--dragon); }

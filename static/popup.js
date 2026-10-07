@@ -25,6 +25,9 @@
       try {
         const b = f.contentDocument.getElementById("drakemorrison-archive-banner");
         if (b) b.remove();
+        // the preview can't run scripts, so hand it the current theme
+        const t = document.documentElement.dataset.theme;
+        if (t) f.contentDocument.documentElement.dataset.theme = t;
       } catch (e) {}
     });
     f.src = a.dataset.preview;

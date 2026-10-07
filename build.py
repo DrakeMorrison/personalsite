@@ -624,14 +624,14 @@ def min_js(path: Path) -> str:
 THEME_INIT = '<script>try{if(localStorage.getItem("theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>'
 
 
-def home_dragon() -> str:
-    """The glyph again, large and pale behind the home page, with an eye that can look around
+def bg_dragon() -> str:
+    """The glyph again, large and pale behind every page, with an eye that can look around
     (eyes.js moves the pupil). The almond and its cut-out pupil are lifted out of the path and
     redrawn as a sclera with a separate pupil."""
     svg = (STATIC / "dragon.svg").read_text(encoding="utf-8")
     d = ET.fromstring(svg).find("{http://www.w3.org/2000/svg}path").get("d")
     if EYE_ALMOND not in d or EYE_PUPIL not in d:
-        warn("dragon.svg eye subpaths not found; home background dragon skipped")
+        warn("dragon.svg eye subpaths not found; background dragon skipped")
         return ""
     d = d.replace(EYE_ALMOND, "").replace(EYE_PUPIL, "")
     eyes = "\n".join(min_js(STATIC / f) for f in ("eyes.js", "fire.js"))
@@ -686,6 +686,7 @@ def page_shell(*, title: str, description: str, body: str, url: str, kind: str =
 </head>
 <body>
 {dragon_symbol()}
+{bg_dragon()}
 <header class="site-head">
 <a class="mark" href="/" aria-label="Home">{DRAGON_USE}</a>
 <nav><a href="/essays/">essays</a></nav>
@@ -756,8 +757,7 @@ def render_home(doc: Doc) -> str:
     links = "".join(f'<li><a href="{esc(l["href"])}"{preview_html(str(l["href"]))}>{esc(l["text"])}</a></li>'
                     for l in doc.meta.get("links", []))
     intro = smarten(str(doc.meta.get("intro", "")))
-    body = f"""{home_dragon()}
-<section class="home">
+    body = f"""<section class="home">
 {photo}
 <h1 class="name">{doc.title_html}</h1>
 <p class="intro">{intro}</p>

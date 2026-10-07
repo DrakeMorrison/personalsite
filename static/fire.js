@@ -1,4 +1,4 @@
-/* Home page: click the background and the dragon breathes fire at that spot. The blaze
+/* Click the page background and the dragon breathes fire at that spot. The blaze
    spreads until it covers the screen, the theme flips light <-> dark underneath it, and
    then the fire burns away. The choice is remembered (build.py's THEME_INIT reads it). */
 (() => {
@@ -6,7 +6,9 @@ const svg = document.querySelector(".bg-dragon svg");
 if (!svg) return;
 const root = document.documentElement;
 const MOUTH = { x: 12.4, y: 19.2 }; // in the glyph's 64-unit viewBox
-const SKIP = "a,button,input,textarea,select,label,summary,img,picture,iframe,video,audio,.popup";
+// only empty background counts: clicks in text, links, images, or previews never set the place on fire
+const SKIP = "a,button,input,textarea,select,label,summary,img,picture,iframe,video,audio,svg,.popup," +
+"p,li,dt,dd,h1,h2,h3,h4,h5,h6,blockquote,pre,code,table,figure,.katex,.footnotes,.post-meta,.site-foot span";
 let busy = false;
 
 function flip() {
